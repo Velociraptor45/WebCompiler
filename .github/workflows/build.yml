@@ -1,0 +1,23 @@
+﻿name: Build
+on:
+  push:
+    branches:
+      - linux_support_with_tests
+  # pull_request:
+  #   types: [opened, synchronize, reopened]
+jobs:
+  build:
+    name: Build *nix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore projects
+        run: |
+          dotnet restore src/WebCompiler/WebCompiler.csproj
+          dotnet restore src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
+      - name: Build projects
+        run: |
+          dotnet build src/WebCompiler/WebCompiler.csproj
+          dotnet build src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
+      - name: Test project
+        run: |
+          dotnet test src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
