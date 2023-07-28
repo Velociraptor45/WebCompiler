@@ -33,7 +33,7 @@ namespace WebCompiler
 
             if ( basePathParts.Count == 0 && filePathParts.Count == 0)
             {
-                return String.Join( Path.DirectorySeparatorChar, ".", Path.GetFileName(file) );
+                return String.Join( Path.DirectorySeparatorChar.ToString(), ".", Path.GetFileName(file) );
             }
 
             if ( basePathParts.Count == 1 && filePathParts.Count == 1)
@@ -44,12 +44,14 @@ namespace WebCompiler
             if ( basePathParts.Count == 0)
             {
                 filePathParts.Insert(0, ".");
-                return String.Join( Path.DirectorySeparatorChar, filePathParts );
+                return String.Join( Path.DirectorySeparatorChar.ToString(), filePathParts );
             }
 
             if ( basePathParts.Count > filePathParts.Count )
             { 
-                return String.Join( Path.DirectorySeparatorChar, Enumerable.Repeat("..",  basePathParts.Count - filePathParts.Count).Concat(filePathParts));
+                return String.Join(
+                    Path.DirectorySeparatorChar.ToString(),
+                    Enumerable.Repeat("..",  basePathParts.Count - filePathParts.Count).Concat(filePathParts));
             }
 
             throw new NotSupportedException();
