@@ -93,10 +93,11 @@ namespace WebCompiler
             }
 
             var log_file = Path.Combine(_path, "log.txt");
+            var node = Path.Combine(_path, node_exe);
 
             lock (_syncRoot)
             {
-                if (!Directory.Exists(node_modules) || !File.Exists(node_exe) || !File.Exists(log_file))
+                if (!Directory.Exists(node_modules) || !File.Exists(node) || !File.Exists(log_file))
                 {
                     OnInitializing();
 
@@ -109,7 +110,7 @@ namespace WebCompiler
 
                     string processFileName;
                     string processArguments;
-                    switch ( System.Environment.OSVersion.Platform )
+                    switch ( Environment.OSVersion.Platform )
                     {
                         case PlatformID.Unix:
                             case PlatformID.MacOSX:
