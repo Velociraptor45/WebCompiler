@@ -2,14 +2,16 @@
 
 #:: IMPORTANT!! npm 3.x is required to avoid long path exceptions
 
-if [ -f ../src/WebCompiler/Node/node_modules.7z ]; then
+node_folder=${0/*}../src/WebCompiler/Node
+
+if [ -f $node_folder/node_modules.7z ]; then
     echo "node_modules.7z already exists. Nothing to do..."
     exit 0
 fi
 
-mkdir -p ../src/WebCompiler/Node
+mkdir -p $node_folder
 
-pushd ../src/WebCompiler/Node
+pushd $node_folder
 
 #        node-sass \ // TODO: GH: is this really needed? it fails to install on OS X
 echo Installing packages...
