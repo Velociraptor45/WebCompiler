@@ -97,9 +97,14 @@ namespace WebCompilerTest
         [TestMethod, TestCategory("LESS")]
         public void CompileCircularReference()
         {
+            // Subtract one second from the last write time to ensure the less files are older than the css files
+            // otherwise the tests are flaky because the css files are created in the same millisecond as the
+            // last write time of the less files
+            var lastWriteTime = DateTime.UtcNow.AddSeconds(-1);
+
             // Set the last write time and create outputs in a way that Config.CheckForNewerDependenciesRecursively will be called
-            File.SetLastWriteTimeUtc("../../../../WebCompilerTest/artifacts/less/circrefa.less", DateTime.UtcNow);
-            File.SetLastWriteTimeUtc("../../../../WebCompilerTest/artifacts/less/circrefb.less", DateTime.UtcNow);
+            File.SetLastWriteTimeUtc("../../../../WebCompilerTest/artifacts/less/circrefa.less", lastWriteTime);
+            File.SetLastWriteTimeUtc("../../../../WebCompilerTest/artifacts/less/circrefb.less", lastWriteTime);
             File.WriteAllText("../../../../WebCompilerTest/artifacts/less/circrefa.css", string.Empty);
             File.WriteAllText("../../../../WebCompilerTest/artifacts/less/circrefa.min.css", string.Empty);
 
