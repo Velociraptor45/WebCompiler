@@ -2,7 +2,7 @@
 
 #:: IMPORTANT!! npm 3.x is required to avoid long path exceptions
 
-node_folder=${0/*}../src/WebCompiler/Node
+node_folder=${0%/*}/../src/WebCompiler/Node
 
 if [ -f $node_folder/node_modules.7z ]; then
     echo "node_modules.7z already exists. Nothing to do..."
