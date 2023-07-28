@@ -2,12 +2,14 @@
 
 #:: IMPORTANT!! npm 3.x is required to avoid long path exceptions
 
-#// TODO: GH: replace this with linux version
-#if exist "../src/WebCompiler/node/node_modules.7z" goto:EOF
+if [ -f ../src/WebCompiler/Node/node_modules.7z ]; then
+    echo "node_modules.7z already exists. Nothing to do..."
+    exit 0
+fi
 
-mkdir ../src/WebCompiler/node
+mkdir -p ../src/WebCompiler/Node
 
-pushd ../src/WebCompiler/node
+pushd ../src/WebCompiler/Node
 
 #        node-sass \ // TODO: GH: is this really needed? it fails to install on OS X
 echo Installing packages...
@@ -71,7 +73,6 @@ rm -rf README > /dev/null
 #for /d /r . %%d in (tst)        do @if exist "%%d" rd /s /q "%%d" > /dev/null
 
 echo Compressing artifacts and cleans up...
-rm node_modules.7z
 7z a -r -mx9 node_modules.7z node_modules > /dev/null
 rm -rf node_modules > /dev/null
 rm package.json > /dev/null
