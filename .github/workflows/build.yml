@@ -16,13 +16,14 @@ jobs:
       - name: Set access rights
         run: |
           chmod +x ./build/build.sh
-      - name: Debug
-        run: |
-          ls -la ./build
       - name: Restore projects
         run: |
           dotnet restore src/WebCompiler/WebCompiler.csproj
           dotnet restore src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
+      - name: Debug
+        run: |
+          pwd
+          ls -la ./src/WebCompiler/Node
       - name: Build projects
         run: |
           dotnet build src/WebCompiler/WebCompiler.csproj
