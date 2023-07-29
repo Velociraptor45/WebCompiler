@@ -19,6 +19,14 @@ namespace WebCompiler
 
             //return Uri.UnescapeDataString(baseUri.MakeRelativeUri(fileUri).ToString());
 
+            // handle *nix / windows directory separator differences
+            baseFile = baseFile
+                .Replace( '\\', Path.DirectorySeparatorChar )
+                .Replace( '/', Path.DirectorySeparatorChar );
+            file = file
+                .Replace( '\\', Path.DirectorySeparatorChar )
+                .Replace( '/', Path.DirectorySeparatorChar );
+
             var basePath = Path.GetFullPath( baseFile );
             var filePath = Path.GetFullPath( file );
 
@@ -55,7 +63,7 @@ namespace WebCompiler
             }
 
             throw new NotSupportedException();
-         }
+        }
 
         /// <summary>
         /// If a file has the read-only attribute, this method will remove it.
