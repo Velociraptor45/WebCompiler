@@ -17,6 +17,7 @@ namespace WebCompilerTest
         public void Setup()
         {
             _processor = new ConfigFileProcessor();
+            Cleanup();
         }
 
         [TestCleanup]
@@ -31,9 +32,14 @@ namespace WebCompilerTest
         [TestMethod, TestCategory("SCSS")]
         public void CompileScss()
         {
-            var result = _processor.Process("../../artifacts/scssconfig.json");
+            var result = _processor.Process("../../artifacts/scssconfig.json").ToList();
             var first = result.First();
             Assert.IsTrue(File.Exists("../../artifacts/scss/test.css"));
+            Console.WriteLine( $"Count: {result.Count}" );
+            if ( result.Count > 0 )
+            {
+                Console.WriteLine( $"First: {result.First().CompiledContent}" );
+            }
             Assert.IsTrue(first.CompiledContent.Contains("/*# sourceMappingURL=data:"));
             Assert.IsTrue(result.ElementAt(1).CompiledContent.Contains("url(../foo.png)"));
             Assert.IsTrue(result.ElementAt(1).CompiledContent.Contains("-webkit-animation"), "AutoPrefix");
@@ -76,7 +82,12 @@ namespace WebCompilerTest
         [TestMethod, TestCategory("SCSS")]
         public void MultiLineComments()
         {
-            var result = _processor.Process("../../artifacts/scssconfig-no-sourcemap.json");
+            var result = _processor.Process("../../artifacts/scssconfig-no-sourcemap.json").ToList();
+            Console.WriteLine( $"Count: {result.Count}" );
+            if ( result.Count > 0 )
+            {
+                Console.WriteLine( $"First: {result.First().CompiledContent}" );
+            }
             Assert.IsTrue(result.First().CompiledContent.Contains("#test3"));
         }
 
