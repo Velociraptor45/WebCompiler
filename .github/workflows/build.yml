@@ -39,6 +39,8 @@ jobs:
           cd build
           cmd /c build.cmd
           cd ..
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.3.1
       - name: Restore projects
         run: |
           dotnet restore src/WebCompiler/WebCompiler.csproj
