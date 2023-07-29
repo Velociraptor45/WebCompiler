@@ -36,18 +36,18 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Run cmd file
         run: |
-          cd build
-          dir
-          cmd /c build.cmd
-          cd ..
+          cmd /c build/build.cmd
       - name: Restore projects
         run: |
           dotnet restore src/WebCompiler/WebCompiler.csproj
-          dotnet restore src/WebCompilerTest/WebCompilerTest.csproj
+          nuget restore src/WebCompilerTest/WebCompilerTest.csproj
       - name: Build projects
         run: |
           dotnet build src/WebCompiler/WebCompiler.csproj
-          dotnet build src/WebCompilerTest/WebCompilerTest.csproj
+          msbuild src/WebCompilerTest/WebCompilerTest.csproj /p:Configuration=Release
       - name: Test project
-        run: |
-          dotnet test src/WebCompilerTest/WebCompilerTest.csproj
+        uses: microsoft/vstest-action@v1.0.0
+        with:
+          testAssembly: WebCompilerTest.dll
+          searchFolder: ./src/WebCompilerTest/bin/Release/
+          runInParallel: true
