@@ -46,7 +46,7 @@ jobs:
           dotnet restore src/WebCompiler/WebCompiler.csproj
           dotnet build src/WebCompiler/WebCompiler.csproj
           cd src/WebCompilerTest
-          msbuild WebCompilerTest.csproj -p:SolutionDir=%CD%/../.. -t:build -restore -p:RestorePackagesConfig=true
+          msbuild WebCompilerTest.csproj -t:build -restore
           cd ../..
       # - name: Build projects
       #   run: |
