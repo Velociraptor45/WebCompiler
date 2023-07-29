@@ -41,8 +41,7 @@ jobs:
           cd ..
       - name: Restore projects
         run: |
-          dotnet restore src/WebCompiler/WebCompiler.csproj
-          nuget restore src/WebCompilerTest/WebCompilerTest.csproj
+          nuget restore WebCompiler.sln
       - name: Build projects
         run: |
           dotnet build src/WebCompiler/WebCompiler.csproj
