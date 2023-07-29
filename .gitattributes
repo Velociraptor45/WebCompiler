@@ -15,3 +15,9 @@
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+
+# line endings
+build/build.sh eol=lf
+build/build.cmd eol=crlf
+src/WebCompiler/Node/prepare.sh eol=lf
+src/WebCompiler/Node/prepare.cmd eol=crlf
