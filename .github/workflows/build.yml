@@ -41,14 +41,16 @@ jobs:
           cd ..
       - name: Restore projects
         run: |
-          nuget restore WebCompiler.sln
+          dotnet restore src/WebCompiler/WebCompiler.csproj
+          echo Restoring test project...
+          dotnet restore src/WebCompilerTest/WebCompilerTest.csproj
       - name: Build projects
         run: |
           dotnet build src/WebCompiler/WebCompiler.csproj
-          msbuild src/WebCompilerTest/WebCompilerTest.csproj /p:Configuration=Release
+          dotnet build src/WebCompilerTest/WebCompilerTest.csproj
       - name: Test project
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: WebCompilerTest.dll
-          searchFolder: ./src/WebCompilerTest/bin/Release/
+          searchFolder: ./src/WebCompilerTest/bin/Debug/
           runInParallel: true
