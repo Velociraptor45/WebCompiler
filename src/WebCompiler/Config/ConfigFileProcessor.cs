@@ -193,6 +193,8 @@ namespace WebCompiler
 
             var result = compiler.Compile(config);
 
+            
+            Console.WriteLine( $"errors: {result.Errors.FirstOrDefault( e => !e.IsWarning )?.Message}" );
             if (result.Errors.Any(e => !e.IsWarning))
                 return result;
 
