@@ -27,6 +27,9 @@ namespace WebCompiler
 
             FileInfo info = new FileInfo(inputFile);
             string content = File.ReadAllText(info.FullName);
+            Console.WriteLine($"#######################################");
+            Console.WriteLine($"Content: {content}");
+            Console.WriteLine($"#######################################");
 
             CompilerResult result = new CompilerResult
             {
