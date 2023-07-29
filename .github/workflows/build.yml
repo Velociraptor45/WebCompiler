@@ -37,6 +37,7 @@ jobs:
       - name: Run cmd file
         run: |
           cd build
+          dir
           build.cmd
           cd ..
       - name: Restore projects
