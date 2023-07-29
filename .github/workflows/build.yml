@@ -44,11 +44,14 @@ jobs:
       - name: Restore projects
         run: |
           dotnet restore src/WebCompiler/WebCompiler.csproj
-          msbuild src/WebCompilerTest/WebCompilerTest.csproj -p:SolutionDir=%CD% -t:restore -p:RestorePackagesConfig=true
-      - name: Build projects
-        run: |
           dotnet build src/WebCompiler/WebCompiler.csproj
-          dotnet build src/WebCompilerTest/WebCompilerTest.csproj
+          cd src/WebCompilerTest
+          msbuild WebCompilerTest.csproj -p:SolutionDir=%CD%/../.. -t:build -restore -p:RestorePackagesConfig=true
+          cd ../..
+      # - name: Build projects
+      #   run: |
+      #     dotnet build src/WebCompiler/WebCompiler.csproj
+      #     dotnet build src/WebCompilerTest/WebCompilerTest.csproj
       - name: Test project
         uses: microsoft/vstest-action@v1.0.0
         with:
