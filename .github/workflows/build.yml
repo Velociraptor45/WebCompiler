@@ -36,7 +36,9 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Run cmd file
         run: |
-          cmd /c ./build/build.cmd
+          cd build
+          cmd /c build.cmd
+          cd ..
       - name: Restore projects
         run: |
           dotnet restore src/WebCompiler/WebCompiler.csproj
