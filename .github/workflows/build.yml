@@ -27,8 +27,8 @@ jobs:
       - name: Test project
         run: |
           dotnet test src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
-  build-windows:
-    name: Build Windows
+  build-windows-net48:
+    name: Build Windows .net Framework
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -41,20 +41,39 @@ jobs:
           cd ..
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.3.1
-      - name: Restore projects
+      - name: Restore & build projects
         run: |
           dotnet restore src/WebCompiler/WebCompiler.csproj
           dotnet build src/WebCompiler/WebCompiler.csproj
           cd src/WebCompilerTest
           msbuild WebCompilerTest.csproj -t:build -restore
           cd ../..
-      # - name: Build projects
-      #   run: |
-      #     dotnet build src/WebCompiler/WebCompiler.csproj
-      #     dotnet build src/WebCompilerTest/WebCompilerTest.csproj
       - name: Test project
         uses: microsoft/vstest-action@v1.0.0
         with:
           testAssembly: WebCompilerTest.dll
           searchFolder: ./src/WebCompilerTest/bin/Debug/
           runInParallel: true
+  build-windows-net-core:
+    name: Build Windows .net Core
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Run cmd file
+        run: |
+          cd build
+          cmd /c build.cmd
+          cd ..
+      - name: Restore projects
+        run: |
+          dotnet restore src/WebCompiler/WebCompiler.csproj
+          dotnet restore src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
+      - name: Build projects
+        run: |
+          dotnet restore src/WebCompiler/WebCompiler.csproj
+          dotnet build src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
+      - name: Test project
+        run: |
+          dotnet test src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
