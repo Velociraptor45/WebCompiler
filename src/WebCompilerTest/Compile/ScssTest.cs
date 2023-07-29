@@ -32,6 +32,7 @@ namespace WebCompilerTest
         [TestMethod, TestCategory("SCSS")]
         public void CompileScss()
         {
+            Console.WriteLine( File.ReadAllText("../../artifacts/scss/sub/foo.scss") );
             var result = _processor.Process("../../artifacts/scssconfig.json").ToList();
             var first = result.First();
             Assert.IsTrue(File.Exists("../../artifacts/scss/test.css"));
