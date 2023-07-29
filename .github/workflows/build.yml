@@ -6,7 +6,7 @@ on:
   # pull_request:
   #   types: [opened, synchronize, reopened]
 jobs:
-  build:
+  build-nix:
     name: Build *nix
     runs-on: ubuntu-latest
     steps:
@@ -20,10 +20,6 @@ jobs:
         run: |
           dotnet restore src/WebCompiler/WebCompiler.csproj
           dotnet restore src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
-      - name: Debug
-        run: |
-          pwd
-          ls -la ./src/WebCompiler/Node
       - name: Build projects
         run: |
           dotnet build src/WebCompiler/WebCompiler.csproj
@@ -31,3 +27,21 @@ jobs:
       - name: Test project
         run: |
           dotnet test src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Restore projects
+        run: |
+          dotnet restore src/WebCompiler/WebCompiler.csproj
+          dotnet restore src/WebCompilerTest/WebCompilerTest.csproj
+      - name: Build projects
+        run: |
+          dotnet build src/WebCompiler/WebCompiler.csproj
+          dotnet build src/WebCompilerTest/WebCompilerTest.csproj
+      - name: Test project
+        run: |
+          dotnet test src/WebCompilerTest/WebCompilerTest.csproj
