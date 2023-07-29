@@ -42,8 +42,9 @@ jobs:
       - name: Restore projects
         run: |
           dotnet restore src/WebCompiler/WebCompiler.csproj
-          echo Restoring test project...
-          dotnet restore src/WebCompilerTest/WebCompilerTest.csproj
+          cd src/WebCompilerTest
+          msbuild -t:restore -p:RestorePackagesConfig=true WebCompilerTest.csproj
+          cd ../..
       - name: Build projects
         run: |
           dotnet build src/WebCompiler/WebCompiler.csproj
