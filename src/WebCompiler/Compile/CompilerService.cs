@@ -97,55 +97,81 @@ namespace WebCompiler
 
             lock (_syncRoot)
             {
-                if (!Directory.Exists(node_modules) || !File.Exists(node) || !File.Exists(log_file))
+                if ( Environment.OSVersion.Platform == PlatformID.Unix
+                   || Environment.OSVersion.Platform == PlatformID.MacOSX )
                 {
-                    OnInitializing();
+                    // for *nix, there is no "node" file
+                    if ( Directory.Exists( node_modules ) && File.Exists( log_file ) )
+                        return;
+                }
+                else
+                {
+                    // for windows, the "node.exe" is required
+                    if ( Directory.Exists( node_modules ) && File.Exists( node ) && File.Exists( log_file ) )
+                        return;
+                }
 
-                    if (Directory.Exists(_path))
-                        Directory.Delete(_path, true);
+                OnInitializing();
 
-                    Directory.CreateDirectory(_path);
-                    SaveResourceFile(_path, "WebCompiler.Node.node.7z", "node.7z");
-                    SaveResourceFile(_path, "WebCompiler.Node.node_modules.7z", "node_modules.7z");
+                if (Directory.Exists(_path))
+                    Directory.Delete(_path, true);
 
-                    string processFileName;
-                    string processArguments;
-                    switch ( Environment.OSVersion.Platform )
+                Directory.CreateDirectory(_path);
+                SaveResourceFile(_path, "WebCompiler.Node.node_modules.7z", "node_modules.7z");
+
+                string processFileName;
+                string processArguments;
+                switch ( Environment.OSVersion.Platform )
+                {
+                    case PlatformID.Unix:
+                    case PlatformID.MacOSX:
+                        SaveResourceFile(_path, "WebCompiler.Node.prepare.sh", "prepare.sh");
+                        processFileName = "/bin/bash";
+                        processArguments = "prepare.sh";
+                        break;
+
+                    default:
+                        SaveResourceFile( _path, "WebCompiler.Node.node.7z", "node.7z" );
+                        SaveResourceFile(_path, "WebCompiler.Node.7z.exe", "7z.exe");
+                        SaveResourceFile(_path, "WebCompiler.Node.7z.dll", "7z.dll");
+                        SaveResourceFile(_path, "WebCompiler.Node.prepare.cmd", "prepare.cmd");
+                        processFileName = "cmd.exe";
+                        processArguments = "/c prepare.cmd";
+                        break;
+                }
+
+                ProcessStartInfo start = new ProcessStartInfo
+                {
+                    WorkingDirectory = _path,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = processFileName,
+                    Arguments = processArguments
+                };
+
+                Process p = Process.Start(start);
+                p.WaitForExit();
+
+                if ( Environment.OSVersion.Platform == PlatformID.Unix
+                     || Environment.OSVersion.Platform == PlatformID.MacOSX )
+                {
+                    ProcessStartInfo permissionsProcessInfo = new ProcessStartInfo
                     {
-                        case PlatformID.Unix:
-                            case PlatformID.MacOSX:
-                            SaveResourceFile(_path, "WebCompiler.Node.prepare.sh", "prepare.sh");
-                            processFileName = "/bin/bash";
-                            processArguments = "prepare.sh";
-                            break;
-
-                        default:
-                            SaveResourceFile(_path, "WebCompiler.Node.7z.exe", "7z.exe");
-                            SaveResourceFile(_path, "WebCompiler.Node.7z.dll", "7z.dll");
-                            SaveResourceFile(_path, "WebCompiler.Node.prepare.cmd", "prepare.cmd");
-                            processFileName = "cmd.exe";
-                            processArguments = "/c prepare.cmd";
-                            break;
-                    }
-
-
-                    ProcessStartInfo start = new ProcessStartInfo
-                    {
-                        WorkingDirectory = _path,
+                        WorkingDirectory = Path.Combine( node_modules, ".bin" ),
                         CreateNoWindow = true,
                         WindowStyle = ProcessWindowStyle.Hidden,
-                        FileName = processFileName,
-                        Arguments = processArguments
+                        FileName = "/bin/bash",
+                        Arguments = "-c \"chmod +x babel handlebars iced lessc node-sass sass stylus\""
                     };
 
-                    Process p = Process.Start(start);
-                    p.WaitForExit();
-
-                    // If this file is written, then the initialization was successful.
-                    File.WriteAllText(log_file, DateTime.Now.ToLongDateString());
-
-                    OnInitialized();
+                    Process p2 = Process.Start(permissionsProcessInfo);
+                    p2.WaitForExit();
                 }
+
+                // If this file is written, then the initialization was successful.
+                File.WriteAllText(log_file, DateTime.Now.ToLongDateString());
+
+                OnInitialized();
             }
         }
 
