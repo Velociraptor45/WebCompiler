@@ -52,8 +52,8 @@ namespace WebCompiler
                 _dependencies[dependencyType].UpdateFileDependencies(sourceFile);
                 return _dependencies[dependencyType].GetDependencies(projectRootPath);
             }
-            else
-                return null;
+
+            return null;
         }
 
         /// <summary>
