@@ -24,6 +24,10 @@ jobs:
         run: |
           dotnet build src/WebCompiler/WebCompiler.csproj
           dotnet build src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
+      - name: List directory
+        run: |
+          ls ./src/WebCompilerTest
+          ls -R ./src/WebCompilerTest/artifacts
       - name: Test project
         run: |
           dotnet test src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
