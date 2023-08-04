@@ -150,7 +150,7 @@ namespace WebCompilerTest.Minify
         [TestMethod, TestCategory("CssOptions")]
         public void IndendSize()
         {
-            var configFile = Path.Combine(processingConfigFile, "indentsize.json");
+            var configFile = Path.Combine(processingConfigFile, "indentSize.json");
             var configs = ConfigHandler.GetConfigs(configFile);
             var cfg = CssOptions.GetSettings(configs.ElementAt(0));
             Assert.AreEqual(8, cfg.IndentSize);
