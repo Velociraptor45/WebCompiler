@@ -102,10 +102,7 @@ namespace WebCompiler
             FileInfo file = new FileInfo(fileName);
 
             if ( !file.Exists )
-            {
-                Console.WriteLine( $"File {fileName} does not exist" );
                 return Enumerable.Empty<Config>();
-            }
 
             string content = File.ReadAllText(fileName);
             var configs = JsonConvert.DeserializeObject<IEnumerable<Config>>(content);

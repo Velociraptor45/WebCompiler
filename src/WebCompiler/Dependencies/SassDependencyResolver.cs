@@ -52,16 +52,13 @@ namespace WebCompiler
                     Dependencies[dependenciesPath].DependentFiles.Remove(path);
                 }
             }
-
-            Console.WriteLine($"Reading content for {info.FullName}");
+            
             string content = File.ReadAllText(info.FullName);
-            Console.WriteLine($"Content: {content}");
 
             //match both <@<type> "myFile.scss";> and <@<type> url("myFile.scss");> syntax (where supported)
             foreach (Match match in importsReg.Matches(content))
             {
                 var importedfiles = GetFileInfos(info, match).ToList();
-                Console.WriteLine($"Imported files:{Environment.NewLine}{string.Join($"{Environment.NewLine}{Environment.NewLine}", importedfiles.Select(f => f.FullName))}");
 
                 foreach (FileInfo importedfile in importedfiles)
                 {

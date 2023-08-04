@@ -38,8 +38,7 @@ namespace WebCompiler
 
                 if (configs.Any())
                     OnConfigProcessed(configs.First(), 0, configs.Count());
-
-                Console.WriteLine($"Processing config file '{configFile}' with {configs.Count()} configurations");
+                
                 foreach (Config config in configs)
                 {
                     if (force || config.CompilationRequired())
@@ -120,8 +119,7 @@ namespace WebCompiler
                 foreach (Config config in configs)
                 {
                     string input = Path.Combine(folder, config.InputFile.Replace( '/', Path.DirectorySeparatorChar ) );
-
-                    Console.WriteLine($"Comparing '{input}' with '{sourceFile.Normalized}'");
+                    
                     if (input.Equals(sourceFile.Normalized, StringComparison.OrdinalIgnoreCase))
                     {
                         list.Add( ProcessConfig( folder, config ) );
@@ -133,15 +131,11 @@ namespace WebCompiler
                 var dependencies = DependencyService.GetDependencies(projectPath, sourceFile);
                 if (dependencies != null)
                 {
-                    Console.WriteLine($"Found {dependencies?.Count ?? 0} dependent files for {sourceFile.Original}");
-                    Console.WriteLine($"Dependencies: {Environment.NewLine}{string.Join( $"{Environment.NewLine}", dependencies.Keys.Select( d => d.Original ) )}");
                     if (dependencies.ContainsKey(sourceFile))
                     {
-                        Console.WriteLine($"Found the following dependent files: {Environment.NewLine}{string.Join( $"{Environment.NewLine}{Environment.NewLine}", dependencies[sourceFile].DependentFiles.Select( f => f.Original ) )}");
                         //compile all files that have references to the compiled file
                         foreach (var file in dependencies[sourceFile].DependentFiles.ToArray())
                         {
-                            Console.WriteLine($"Compiling {file.Original} because it is a dependency in {sourceFile.Original}");
                             if (!compiledFiles.Contains(file))
                                 list.AddRange(SourceFileChanged(configFile, file, projectPath, compiledFiles));
                         }
@@ -197,7 +191,6 @@ namespace WebCompiler
 
         private CompilerResult ProcessConfig(string baseFolder, Config config)
         {
-            Console.WriteLine($"Processing config: {config.InputFile}");
             ICompiler compiler = CompilerService.GetCompiler(config);
 
             var result = compiler.Compile(config);
@@ -205,7 +198,6 @@ namespace WebCompiler
             if ( result.Errors.Any( e => !e.IsWarning ) )
             {
                 var errors = result.Errors.Select( e => e.Message );
-                Console.WriteLine($"Compilation finished with errors:{Environment.NewLine} {string.Join( $"{Environment.NewLine}{Environment.NewLine}", errors)}");
                 return result;
             }
 
