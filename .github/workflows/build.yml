@@ -1,10 +1,7 @@
 ﻿name: Build
 on:
-  push:
-    branches:
-      - linux_support_with_tests
-  # pull_request:
-  #   types: [opened, synchronize, reopened]
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   build-nix:
     name: Build *nix
