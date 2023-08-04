@@ -155,6 +155,7 @@ namespace WebCompiler
                 if ( Environment.OSVersion.Platform == PlatformID.Unix
                      || Environment.OSVersion.Platform == PlatformID.MacOSX )
                 {
+                    // make sure that the required files are executable
                     ProcessStartInfo permissionsProcessInfo = new ProcessStartInfo
                     {
                         WorkingDirectory = Path.Combine( node_modules, ".bin" ),

@@ -38,7 +38,7 @@ namespace WebCompiler
 
                 if (configs.Any())
                     OnConfigProcessed(configs.First(), 0, configs.Count());
-                
+
                 foreach (Config config in configs)
                 {
                     if (force || config.CompilationRequired())
@@ -119,11 +119,11 @@ namespace WebCompiler
                 foreach (Config config in configs)
                 {
                     string input = Path.Combine(folder, config.InputFile.Replace( '/', Path.DirectorySeparatorChar ) );
-                    
+
                     if (input.Equals(sourceFile.Normalized, StringComparison.OrdinalIgnoreCase))
                     {
-                        list.Add( ProcessConfig( folder, config ) );
-                        compiledFiles.Add( new FilePath( input ) );
+                        list.Add(ProcessConfig(folder, config));
+                        compiledFiles.Add(new FilePath(input));
                     }
                 }
 
@@ -196,10 +196,7 @@ namespace WebCompiler
             var result = compiler.Compile(config);
 
             if ( result.Errors.Any( e => !e.IsWarning ) )
-            {
-                var errors = result.Errors.Select( e => e.Message );
                 return result;
-            }
 
             if (Path.GetExtension(config.OutputFile).Equals(".css", StringComparison.OrdinalIgnoreCase) && AdjustRelativePaths(config))
             {

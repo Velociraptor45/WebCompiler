@@ -31,10 +31,8 @@ namespace WebCompiler
         /// <param name="path"></param>
         public override void UpdateFileDependencies(FilePath path)
         {
-            if ( Dependencies == null )
-            {
+            if (Dependencies == null)
                 return;
-            }
 
             FileInfo info = new FileInfo(path.Original);
             path = new FilePath(info.FullName);

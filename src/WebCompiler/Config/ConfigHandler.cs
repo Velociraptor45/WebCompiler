@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -101,7 +100,7 @@ namespace WebCompiler
         {
             FileInfo file = new FileInfo(fileName);
 
-            if ( !file.Exists )
+            if (!file.Exists)
                 return Enumerable.Empty<Config>();
 
             string content = File.ReadAllText(fileName);
