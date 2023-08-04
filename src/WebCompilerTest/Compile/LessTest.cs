@@ -54,7 +54,7 @@ namespace WebCompilerTest
         [TestMethod, TestCategory("LESS")]
         public void CompileLessWithError()
         {
-            var result = _processor.Process("../../artifacts/lessconfigerror.json");
+            var result = _processor.Process("../../artifacts/lessconfigError.json");
             Assert.IsTrue(result.Any(r => r.HasErrors));
             Assert.IsTrue(result.Count() == 1);
             Assert.IsTrue(result.ElementAt(0).HasErrors);
@@ -63,7 +63,7 @@ namespace WebCompilerTest
         [TestMethod, TestCategory("LESS")]
         public void CompileLessWithParsingExceptionError()
         {
-            var result = _processor.Process("../../artifacts/lessconfigParseerror.json");
+            var result = _processor.Process("../../artifacts/lessconfigParseError.json");
             Assert.IsTrue(result.Any(r => r.HasErrors));
             Assert.IsTrue(result.Count() == 1);
             Assert.IsTrue(result.ElementAt(0).HasErrors);

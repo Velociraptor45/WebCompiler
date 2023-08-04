@@ -39,7 +39,7 @@ namespace WebCompilerTest
         [TestMethod, TestCategory("Iced CoffeeScript")]
         public void CompileIcedCoffeeScriptWithError()
         {
-            var result = _processor.Process("../../../../WebCompilerTest/artifacts/icedcoffeeconfigerror.json");
+            var result = _processor.Process("../../../../WebCompilerTest/artifacts/icedcoffeeconfigError.json");
             var error = result.First().Errors[0];
             Assert.AreEqual(1, error.LineNumber);
             Assert.AreEqual("unexpected ==", error.Message);
