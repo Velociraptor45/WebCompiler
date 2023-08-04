@@ -130,6 +130,8 @@ namespace WebCompiler
 
                 //compile files that are dependent on the current file
                 var dependencies = DependencyService.GetDependencies(projectPath, sourceFile);
+                Console.WriteLine($"Found {dependencies?.Count ?? 0} dependent files for {sourceFile.Original}");
+                Console.WriteLine($"Dependencies: {Environment.NewLine}{string.Join( $"{Environment.NewLine}", dependencies.Keys.Select( d => d.Original ) )}");
                 if (dependencies != null)
                 {
                     if (dependencies.ContainsKey(sourceFile))
