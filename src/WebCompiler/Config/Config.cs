@@ -89,13 +89,21 @@ namespace WebCompiler
             FileInfo input = GetAbsoluteInputFile();
             FileInfo output = GetAbsoluteOutputFile();
 
-            if (!output.Exists)
+            if ( !output.Exists )
+            {
+                Console.WriteLine($"Output file {output.FullName} does not exist.");
                 return true;
+            }
 
-            if (input.LastWriteTimeUtc > output.LastWriteTimeUtc)
+            if ( input.LastWriteTimeUtc > output.LastWriteTimeUtc )
+            {
+                Console.WriteLine($"Input file {input.FullName} is newer than output file {output.FullName}.");
                 return true;
+            }
 
-            return HasDependenciesNewerThanOutput(input, output);
+            var hasNewDependencies = HasDependenciesNewerThanOutput(input, output);
+            Console.WriteLine($"Input file {input.FullName} has new dependencies: {hasNewDependencies}.");
+            return hasNewDependencies;
         }
 
         private bool HasDependenciesNewerThanOutput(FileInfo input, FileInfo output)

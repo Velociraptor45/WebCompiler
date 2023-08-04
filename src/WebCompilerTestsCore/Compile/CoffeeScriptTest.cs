@@ -14,6 +14,7 @@ namespace WebCompilerTest
         public void Setup()
         {
             _processor = new ConfigFileProcessor();
+            Cleanup();
         }
 
         [TestCleanup]

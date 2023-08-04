@@ -39,6 +39,7 @@ namespace WebCompiler
                 if (configs.Any())
                     OnConfigProcessed(configs.First(), 0, configs.Count());
 
+                Console.WriteLine($"Processing config file '{configFile}' with {configs.Count()} configurations");
                 foreach (Config config in configs)
                 {
                     if (force || config.CompilationRequired())
@@ -189,14 +190,17 @@ namespace WebCompiler
 
         private CompilerResult ProcessConfig(string baseFolder, Config config)
         {
+            Console.WriteLine($"Processing config: {config.InputFile}");
             ICompiler compiler = CompilerService.GetCompiler(config);
 
             var result = compiler.Compile(config);
 
-            
-            Console.WriteLine( $"errors: {result.Errors.FirstOrDefault( e => !e.IsWarning )?.Message}" );
-            if (result.Errors.Any(e => !e.IsWarning))
+            if ( result.Errors.Any( e => !e.IsWarning ) )
+            {
+                var errors = result.Errors.Select( e => e.Message );
+                Console.WriteLine($"Compilation finished with errors:{Environment.NewLine} {string.Join( $"{Environment.NewLine}{Environment.NewLine}", errors)}");
                 return result;
+            }
 
             if (Path.GetExtension(config.OutputFile).Equals(".css", StringComparison.OrdinalIgnoreCase) && AdjustRelativePaths(config))
             {
