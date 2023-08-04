@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace WebCompiler
 {
@@ -6,11 +7,11 @@ namespace WebCompiler
     {
         public FilePath(string path)
         {
-            Lowercase = path.ToLowerInvariant();
+            Normalized = path.ToLowerInvariant().Replace( "/", Path.DirectorySeparatorChar.ToString() );
             Original = path;
         }
 
-        public string Lowercase { get; }
+        public string Normalized { get; }
         public string Original { get; }
 
         public bool Equals( FilePath other )
@@ -25,7 +26,7 @@ namespace WebCompiler
                 return true;
             }
 
-            return Lowercase == other.Lowercase;
+            return Normalized == other.Normalized;
         }
 
         public override bool Equals( object obj )
@@ -50,7 +51,7 @@ namespace WebCompiler
 
         public override int GetHashCode()
         {
-            return Lowercase != null ? Lowercase.GetHashCode() : 0;
+            return Normalized != null ? Normalized.GetHashCode() : 0;
         }
 
         public static bool operator ==( FilePath left, FilePath right )

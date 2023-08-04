@@ -119,26 +119,29 @@ namespace WebCompiler
                 // Compile if the file if it's referenced directly in compilerconfig.json
                 foreach (Config config in configs)
                 {
-                    string input = Path.Combine(folder, config.InputFile.Replace('/', Path.DirectorySeparatorChar));
+                    string input = Path.Combine(folder, config.InputFile.Replace( '/', Path.DirectorySeparatorChar ) );
 
-                    if (input.Equals(sourceFile.Original, StringComparison.OrdinalIgnoreCase))
+                    Console.WriteLine($"Comparing '{input}' with '{sourceFile.Normalized}'");
+                    if (input.Equals(sourceFile.Normalized, StringComparison.OrdinalIgnoreCase))
                     {
-                        list.Add(ProcessConfig(folder, config));
-                        compiledFiles.Add(new FilePath(input));
+                        list.Add( ProcessConfig( folder, config ) );
+                        compiledFiles.Add( new FilePath( input ) );
                     }
                 }
 
                 //compile files that are dependent on the current file
                 var dependencies = DependencyService.GetDependencies(projectPath, sourceFile);
-                Console.WriteLine($"Found {dependencies?.Count ?? 0} dependent files for {sourceFile.Original}");
-                Console.WriteLine($"Dependencies: {Environment.NewLine}{string.Join( $"{Environment.NewLine}", dependencies.Keys.Select( d => d.Original ) )}");
                 if (dependencies != null)
                 {
+                    Console.WriteLine($"Found {dependencies?.Count ?? 0} dependent files for {sourceFile.Original}");
+                    Console.WriteLine($"Dependencies: {Environment.NewLine}{string.Join( $"{Environment.NewLine}", dependencies.Keys.Select( d => d.Original ) )}");
                     if (dependencies.ContainsKey(sourceFile))
                     {
+                        Console.WriteLine($"Found the following dependent files: {Environment.NewLine}{string.Join( $"{Environment.NewLine}{Environment.NewLine}", dependencies[sourceFile].DependentFiles.Select( f => f.Original ) )}");
                         //compile all files that have references to the compiled file
                         foreach (var file in dependencies[sourceFile].DependentFiles.ToArray())
                         {
+                            Console.WriteLine($"Compiling {file.Original} because it is a dependency in {sourceFile.Original}");
                             if (!compiledFiles.Contains(file))
                                 list.AddRange(SourceFileChanged(configFile, file, projectPath, compiledFiles));
                         }
