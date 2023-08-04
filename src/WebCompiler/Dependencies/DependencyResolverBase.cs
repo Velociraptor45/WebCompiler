@@ -9,12 +9,12 @@ namespace WebCompiler
     /// </summary>
     public abstract class DependencyResolverBase
     {
-        private Dictionary<string, Dependencies> _dependencies;
+        private Dictionary<FilePath, Dependencies> _dependencies;
 
         /// <summary>
         /// Stores all resolved dependencies
         /// </summary>
-        protected Dictionary<string, Dependencies> Dependencies
+        protected Dictionary<FilePath, Dependencies> Dependencies
         {
             get
             {
@@ -42,19 +42,22 @@ namespace WebCompiler
         /// Gets the dependency tree
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, Dependencies> GetDependencies(string projectRootPath)
+        public Dictionary<FilePath, Dependencies> GetDependencies(string projectRootPath)
         {
             if (_dependencies == null)
             {
-                _dependencies = new Dictionary<string, Dependencies>();
+                _dependencies = new Dictionary<FilePath, Dependencies>();
 
-                List<string> files = new List<string>();
-                foreach (var pattern in this.SearchPatterns)
+                List<FilePath> files = new List<FilePath>();
+                foreach (var pattern in SearchPatterns)
                 {
-                    files.AddRange(Directory.GetFiles(projectRootPath, pattern, SearchOption.AllDirectories));
+                    var foundFiles = Directory.GetFiles( projectRootPath, pattern, SearchOption.AllDirectories )
+                        .Select( f => new FilePath( f ) )
+                        .ToList();
+                    files.AddRange(foundFiles);
                 }
 
-                foreach (var path in (from p in files select p.ToLowerInvariant()))
+                foreach (var path in files)
                 {
                     UpdateFileDependencies(path);
                 }
@@ -66,6 +69,6 @@ namespace WebCompiler
         /// <summary>
         /// Updates the dependencies for the given file
         /// </summary>
-        public abstract void UpdateFileDependencies(string path);
+        public abstract void UpdateFileDependencies(FilePath path);
     }
 }

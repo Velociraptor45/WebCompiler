@@ -109,21 +109,22 @@ namespace WebCompiler
         private bool HasDependenciesNewerThanOutput(FileInfo input, FileInfo output)
         {
             var projectRoot = new FileInfo(FileName).DirectoryName;
-            var dependencies = DependencyService.GetDependencies(projectRoot, input.FullName);
+            var dependencies = DependencyService.GetDependencies(projectRoot, new FilePath(input.FullName));
 
             if (dependencies != null)
             {
-                string key = input.FullName.ToLowerInvariant();
+                FilePath key = new FilePath(input.FullName);
                 return CheckForNewerDependenciesRecursively(key, dependencies, output);
             }
 
             return false;
         }
 
-        private bool CheckForNewerDependenciesRecursively(string key, Dictionary<string, Dependencies> dependencies, FileInfo output, HashSet<string> checkedDependencies = null)
+        private bool CheckForNewerDependenciesRecursively(FilePath key, Dictionary<FilePath, Dependencies> dependencies, 
+            FileInfo output, HashSet<FilePath> checkedDependencies = null)
         {
             if (checkedDependencies == null)
-                checkedDependencies = new HashSet<string>();
+                checkedDependencies = new HashSet<FilePath>();
 
             checkedDependencies.Add(key);
 
@@ -135,7 +136,7 @@ namespace WebCompiler
                 if (checkedDependencies.Contains(file))
                     continue;
 
-                var fileInfo = new FileInfo(file);
+                var fileInfo = new FileInfo(file.Original);
 
                 if (!fileInfo.Exists)
                     continue;

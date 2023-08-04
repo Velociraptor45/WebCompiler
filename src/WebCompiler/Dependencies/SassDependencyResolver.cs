@@ -29,72 +29,73 @@ namespace WebCompiler
         /// Updates the dependencies of a single file
         /// </summary>
         /// <param name="path"></param>
-        public override void UpdateFileDependencies(string path)
+        public override void UpdateFileDependencies(FilePath path)
         {
-            if (this.Dependencies != null)
+            if ( Dependencies == null )
             {
-                FileInfo info = new FileInfo(path);
-                path = info.FullName.ToLowerInvariant();
+                return;
+            }
 
-                if (!Dependencies.ContainsKey(path))
-                    Dependencies[path] = new Dependencies();
+            FileInfo info = new FileInfo(path.Original);
+            path = new FilePath(info.FullName);
 
-                //remove the dependencies registration of this file
-                this.Dependencies[path].DependentOn = new HashSet<string>();
-                //remove the dependentfile registration of this file for all other files
-                foreach (var dependenciesPath in Dependencies.Keys)
+            if (!Dependencies.ContainsKey(path))
+                Dependencies[path] = new Dependencies();
+
+            //remove the dependencies registration of this file
+            Dependencies[path].DependentOn = new HashSet<FilePath>();
+            //remove the dependentfile registration of this file for all other files
+            foreach (var dependenciesPath in Dependencies.Keys)
+            {
+                if (Dependencies[dependenciesPath].DependentFiles.Contains(path))
                 {
-                    var lowerDependenciesPath = dependenciesPath.ToLowerInvariant();
-                    if (Dependencies[lowerDependenciesPath].DependentFiles.Contains(path))
-                    {
-                        Dependencies[lowerDependenciesPath].DependentFiles.Remove(path);
-                    }
+                    Dependencies[dependenciesPath].DependentFiles.Remove(path);
                 }
+            }
 
-                string content = File.ReadAllText(info.FullName);
+            string content = File.ReadAllText(info.FullName);
 
-                //match both <@<type> "myFile.scss";> and <@<type> url("myFile.scss");> syntax (where supported)
-                foreach (Match match in importsReg.Matches(content))
+            //match both <@<type> "myFile.scss";> and <@<type> url("myFile.scss");> syntax (where supported)
+            foreach (Match match in importsReg.Matches(content))
+            {
+                var importedfiles = GetFileInfos(info, match);
+
+                foreach (FileInfo importedfile in importedfiles)
                 {
-                    var importedfiles = GetFileInfos(info, match);
+                    if (importedfile == null)
+                        continue;
 
-                    foreach (FileInfo importedfile in importedfiles)
+                    var theFile = importedfile;
+
+                    //if the file doesn't end with the correct extension, an import statement without extension is probably used, to re-add the extension (#175)
+                    if (string.Compare(importedfile.Extension, FileExtension, StringComparison.OrdinalIgnoreCase) != 0)
                     {
-                        if (importedfile == null)
+                        theFile = new FileInfo(importedfile.FullName + FileExtension);
+                    }
+
+                    var dependencyFilePath = new FilePath(theFile.FullName);
+
+                    if (!File.Exists(dependencyFilePath.Original))
+                    {
+                        // Trim leading underscore to support Sass partials
+                        var dir = Path.GetDirectoryName(dependencyFilePath.Original);
+                        var fileName = Path.GetFileName(dependencyFilePath.Original);
+                        var cleanPath = Path.Combine(dir, "_" + fileName);
+
+                        if (!File.Exists(cleanPath))
                             continue;
 
-                        var theFile = importedfile;
-
-                        //if the file doesn't end with the correct extension, an import statement without extension is probably used, to re-add the extension (#175)
-                        if (string.Compare(importedfile.Extension, FileExtension, StringComparison.OrdinalIgnoreCase) != 0)
-                        {
-                            theFile = new FileInfo(importedfile.FullName + this.FileExtension);
-                        }
-
-                        var dependencyFilePath = theFile.FullName.ToLowerInvariant();
-
-                        if (!File.Exists(dependencyFilePath))
-                        {
-                            // Trim leading underscore to support Sass partials
-                            var dir = Path.GetDirectoryName(dependencyFilePath);
-                            var fileName = Path.GetFileName(dependencyFilePath);
-                            var cleanPath = Path.Combine(dir, "_" + fileName);
-
-                            if (!File.Exists(cleanPath))
-                                continue;
-
-                            dependencyFilePath = cleanPath.ToLowerInvariant();
-                        }
-
-                        if (!Dependencies[path].DependentOn.Contains(dependencyFilePath))
-                            Dependencies[path].DependentOn.Add(dependencyFilePath);
-
-                        if (!Dependencies.ContainsKey(dependencyFilePath))
-                            Dependencies[dependencyFilePath] = new Dependencies();
-
-                        if (!Dependencies[dependencyFilePath].DependentFiles.Contains(path))
-                            Dependencies[dependencyFilePath].DependentFiles.Add(path);
+                        dependencyFilePath = new FilePath(cleanPath);
                     }
+
+                    if (!Dependencies[path].DependentOn.Contains(dependencyFilePath))
+                        Dependencies[path].DependentOn.Add(dependencyFilePath);
+
+                    if (!Dependencies.ContainsKey(dependencyFilePath))
+                        Dependencies[dependencyFilePath] = new Dependencies();
+
+                    if (!Dependencies[dependencyFilePath].DependentFiles.Contains(path))
+                        Dependencies[dependencyFilePath].DependentFiles.Add(path);
                 }
             }
         }

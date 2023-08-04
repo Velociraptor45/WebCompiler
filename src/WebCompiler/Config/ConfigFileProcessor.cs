@@ -95,16 +95,20 @@ namespace WebCompiler
                                                              string sourceFile,
                                                              string projectPath)
         {
-            return SourceFileChanged(Path.GetFullPath(configFile), sourceFile, projectPath, new HashSet<string>());
+            return SourceFileChanged(
+                Path.GetFullPath(configFile),
+                new FilePath(sourceFile),
+                projectPath,
+                new HashSet<FilePath>());
         }
 
         /// <summary>
         /// Compiles all configs with the same input file extension as the specified sourceFile
         /// </summary>
         private IEnumerable<CompilerResult> SourceFileChanged(string configFile,
-                                                              string sourceFile,
+                                                              FilePath sourceFile,
                                                               string projectPath,
-                                                              HashSet<string> compiledFiles)
+                                                              HashSet<FilePath> compiledFiles)
         {
             lock (_syncRoot)
             {
@@ -117,10 +121,10 @@ namespace WebCompiler
                 {
                     string input = Path.Combine(folder, config.InputFile.Replace('/', Path.DirectorySeparatorChar));
 
-                    if (input.Equals(sourceFile, StringComparison.OrdinalIgnoreCase))
+                    if (input.Equals(sourceFile.Original, StringComparison.OrdinalIgnoreCase))
                     {
                         list.Add(ProcessConfig(folder, config));
-                        compiledFiles.Add(input.ToLowerInvariant());
+                        compiledFiles.Add(new FilePath(input));
                     }
                 }
 
@@ -128,14 +132,12 @@ namespace WebCompiler
                 var dependencies = DependencyService.GetDependencies(projectPath, sourceFile);
                 if (dependencies != null)
                 {
-                    string key = sourceFile.ToLowerInvariant();
-
-                    if (dependencies.ContainsKey(key))
+                    if (dependencies.ContainsKey(sourceFile))
                     {
                         //compile all files that have references to the compiled file
-                        foreach (var file in dependencies[key].DependentFiles.ToArray())
+                        foreach (var file in dependencies[sourceFile].DependentFiles.ToArray())
                         {
-                            if (!compiledFiles.Contains(file.ToLowerInvariant()))
+                            if (!compiledFiles.Contains(file))
                                 list.AddRange(SourceFileChanged(configFile, file, projectPath, compiledFiles));
                         }
                     }
@@ -145,7 +147,7 @@ namespace WebCompiler
                     // If not referenced directly, compile all configs with same file extension
                     if (list.Count == 0)
                     {
-                        string sourceExtension = Path.GetExtension(sourceFile);
+                        string sourceExtension = Path.GetExtension(sourceFile.Original);
 
                         foreach (Config config in configs)
                         {

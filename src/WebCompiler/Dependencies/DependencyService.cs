@@ -26,13 +26,13 @@ namespace WebCompiler
         /// Gets the dependency tree for the type of file of the given sourceFile
         /// </summary>
         /// <returns>the dependency tree</returns>
-        public static Dictionary<string, Dependencies> GetDependencies(string projectRootPath,
-                                                                       string sourceFile)
+        public static Dictionary<FilePath, Dependencies> GetDependencies(string projectRootPath,
+            FilePath sourceFile)
         {
             if (projectRootPath == null)
                 return null;
 
-            var dependencyType = GetDependencyType(sourceFile);
+            var dependencyType = GetDependencyType(sourceFile.Original);
 
             if(!_dependencies.ContainsKey(dependencyType))
             {
