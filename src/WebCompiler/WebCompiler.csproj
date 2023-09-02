@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\common.props" />
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -34,10 +34,10 @@
   <ItemGroup>
     <Content Include="MSBuild\*.targets" PackagePath="build\" />
   </ItemGroup>
-  <Target Name="PrepareNpmDependencies" AfterTargets="Restore">
+  <Target Name="PrepareNpmDependenciesWindows" AfterTargets="Restore" Condition=" '$(OS)' == 'Windows_NT' ">
     <Exec Command="..\..\build\build.cmd" />
   </Target>
-  <Target Name="PrepareNpmDependencies" AfterTargets="Restore">
+  <Target Name="PrepareNpmDependenciesUnix" AfterTargets="Restore" Condition=" '$(OS)' == 'Unix' ">
     <Exec Command="..\..\build\build.sh" />
   </Target>
   <Target Name="PackTaskDependencies" BeforeTargets="GenerateNuspec">
