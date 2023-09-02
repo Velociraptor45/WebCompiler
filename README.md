@@ -25,6 +25,10 @@ for changes and roadmap.
 - Command line interface
 - Integrates with [Web Analyzer](https://visualstudiogallery.msdn.microsoft.com/6edc26d4-47d8-4987-82ee-7c820d79be1d)
 
+### Unix
+
+To be able to run on Unix, you have to have 7z (full) and nodejs installed. For Windows, both come with the package.
+
 ### Getting started
 
 Right-click any `.less`, `.scss`, `.styl`, `.jsx`, `.es6` or `.coffee` file in Solution Explorer to
