@@ -55,11 +55,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Run cmd file
-        run: |
-          cd build
-          cmd /c build.cmd
-          cd ..
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.3.1
       - name: Restore & build projects
@@ -82,11 +77,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Run cmd file
-        run: |
-          cd build
-          cmd /c build.cmd
-          cd ..
       - name: Restore projects
         run: |
           dotnet restore src/WebCompiler/WebCompiler.csproj
