@@ -3,8 +3,29 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  build-nix:
-    name: Build *nix
+  build-macos:
+    name: Build MacOS
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set access rights
+        run: |
+          chmod +x ./build/build.sh
+      - name: Restore projects
+        run: |
+          dotnet restore src/WebCompiler/WebCompiler.csproj
+          dotnet restore src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
+      - name: Build projects
+        run: |
+          dotnet build src/WebCompiler/WebCompiler.csproj
+          dotnet build src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
+      - name: Test project
+        run: |
+          dotnet test src/WebCompilerTestsCore/WebCompilerTestsCore.csproj
+  build-ubuntu:
+    name: Build Ubuntu
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
