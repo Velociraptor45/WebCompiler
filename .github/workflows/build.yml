@@ -1,7 +1,10 @@
 ﻿name: Build
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - linux_support_with_tests
+  # pull_request:
+  #   types: [opened, synchronize, reopened]
 jobs:
   build-macos:
     name: Build MacOS
