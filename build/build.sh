@@ -58,21 +58,7 @@ rm -rf gulpfile.* > /dev/null
 rm -rf makefile.* > /dev/null
 rm -rf README > /dev/null
 
-# TODO: limux version of the below
-#for /d /r . %%d in (benchmark)  do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (bench)      do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (doc)        do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (docs)       do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (example)    do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (examples)   do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (images)     do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (man)        do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (media)      do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (scripts)    do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (test)       do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (tests)      do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (testing)    do @if exist "%%d" rd /s /q "%%d" > /dev/null
-#for /d /r . %%d in (tst)        do @if exist "%%d" rd /s /q "%%d" > /dev/null
+rm -rf benchmark bench doc docs example examples images man media scripts test tests testing tst > /dev/null
 
 echo Compressing artifacts and cleans up...
 7z a -r -mx9 node_modules.7z node_modules > /dev/null
